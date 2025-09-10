@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LZR Buttons</title>
+  <style>
+    body {
+      background:#0f1115; color:#e6e9f2;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      height:100vh; font-family:sans-serif;
+    }
+    button {
+      background:#1e293b; color:#fff; border:none; padding:12px 24px;
+      border-radius:8px; margin:10px; cursor:pointer; font-size:16px;
+      transition:0.2s;
+    }
+    button:hover { background:#334155; }
+    #toast {
+      position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+      background:#22c55e; color:#fff; padding:12px 20px; border-radius:6px;
+      opacity:0; pointer-events:none; transition:opacity 0.5s;
+    }
+    #toast.show { opacity:1; }
+  </style>
+</head>
+<body>
+
+  <button id="btn1">LZR CHANGE BUTTON</button>
+  <button id="btn2">DEPOSIT LZR ACTIVE</button>
+
+  <div id="toast"></div>
+
+  <script type="module">
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, set, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      databaseURL: "https://newsamwrr-default-rtdb.firebaseio.com"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Toast function
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    // Button 1 → write data
+    document.getElementById("btn1").addEventListener("click", () => {
+      set(ref(db, "lzr/lzr"), { lzr: "ACTIVE" })
+        .then(() => showToast("LZR set to ACTIVE"))
+        .catch(err => showToast("Error: " + err.message));
+    });
+
+    // Button 2 → clear data
+    document.getElementById("btn2").addEventListener("click", () => {
+      remove(ref(db, "lzr/lzr/lzr"))
+        .then(() => showToast("lzr/lzr cleared"))
+        .catch(err => showToast("Error: " + err.message));
+    });
+  </script>
+
+</body>
+</html>
